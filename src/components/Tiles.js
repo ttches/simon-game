@@ -1,8 +1,12 @@
 import React from 'react';
 
-const Tiles = ({color}) => {
+const Tiles = ({color, onTileClick}) => {
   return (
-    <div className={`tile tile-${color}`}></div>
+    <div
+      data-color={color}
+      className={`tile tile-${color}`}
+      onClick={onTileClick}>
+    </div>
   )
 }
 
