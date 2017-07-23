@@ -1,5 +1,41 @@
+html {
+  height: 100%;
+  width: 100%;
+}
+
 body {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  width: 100%;
+}
+#board {
+  display: inline-flex;
+  flex-wrap: wrap;
+  width: 400px;
+}
+
+.tile {
+  height: 200px;
+  width: 50%;
+}
+.tile-red {
+  background-color: red;
+  border-radius: 100% 0px 0px 0px;
+}
+.tile-green {
+  background-color: green;
+  border-radius:0px 0px 100% 0px;
+}
+.tile-blue {
+  background-color: blue;
+  border-radius: 0px 0px 0px 100%;
+}
+.tile-yellow {
+  background-color: yellow;
+  border-radius: 0px 100% 0px 0px;
 }

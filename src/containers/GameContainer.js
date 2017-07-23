@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import Game from '../components/Game';
+
 export default class GameContainer extends Component {
   constructor() {
     super();
@@ -13,7 +15,7 @@ export default class GameContainer extends Component {
 
   render() {
     return (
-      <div>It works!</div>
+      <Game />
     )
   }
 }
