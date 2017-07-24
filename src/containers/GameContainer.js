@@ -16,26 +16,33 @@ export default class GameContainer extends Component {
       playerTurn: false,
       playing: false,
       score: 0,
-      sequence: []
+      sequence: ['green', 'yellow', 'red']
     }
   }
 
   buildSequence() {
     const colors = ['red', 'green', 'blue', 'yellow'];
     const randColor = colors[Math.floor(Math.random() * 4)];
+    const newSequence = [...this.state.sequence];
+    newSequence.push(randColor);
     this.setState({
       ...this.state,
-      sequence: this.state.sequence.push(randColor)
+      sequence: newSequence
+    }, () => {
+      this.showSequence();
     });
   }
 
   handlePlay() {
     this.setState({
       ...this.state,
-      playing: true
+      entered: [],
+      playing: true,
+      socre: 0,
+      //sequence: []
+    }, () => {
+      this.buildSequence()
     });
-    this.buildSequence();
-    this.showSequence();
   }
 
   handleTileClick(e) {
@@ -53,7 +60,28 @@ export default class GameContainer extends Component {
 
 
   showSequence() {
-    return;
+    let idx = 0;
+    const {sequence} = this.state;
+    setInterval( () => {
+      //If the sequence has been shown, let the player play
+      if (idx >= sequence.length) {
+        this.setState({
+          ...this.state,
+          playerTurn: true
+        });
+        return;
+      }
+
+      const color = sequence[idx];
+      const tile = document.querySelector(`.tile[data-color=${color}]`);
+      tile.classList.add('active');
+
+      setTimeout( () => {
+        tile.classList.remove('active');
+      }, 800);
+
+      idx++;
+    }, 1000);
   }
 
 
