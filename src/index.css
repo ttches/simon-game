@@ -14,10 +14,15 @@ body {
   width: 100%;
 }
 
+#root {
+  width: 100%;
+  max-width: 400px;
+}
+
 #board {
   display: inline-flex;
   flex-wrap: wrap;
-  width: 400px;
+  width: 100%;
 }
 
 button {
@@ -28,8 +33,9 @@ button {
 }
 
 .scores {
+  margin: 5%;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
 }
 
 .tile {
