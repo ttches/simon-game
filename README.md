@@ -1,2 +1,2 @@
 Practicing react
-link: 
+link: https://ttches.github.io/simon-game/
