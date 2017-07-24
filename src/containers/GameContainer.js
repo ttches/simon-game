@@ -6,10 +6,12 @@ export default class GameContainer extends Component {
   constructor() {
     super();
     this.buildSequence = this.buildSequence.bind(this);
+    this.checkEntered = this.checkEntered.bind(this);
+    this.gameOver = this.gameOver.bind(this);
     this.handlePlay = this.handlePlay.bind(this);
     this.handleTileClick = this.handleTileClick.bind(this);
-    this.removeActive = this.removeActive.bind(this);
     this.showSequence = this.showSequence.bind(this);
+    this.toggleActiveTile = this.toggleActiveTile.bind(this);
     this.state = {
       entered: [],
       highScore: 0,
@@ -29,8 +31,46 @@ export default class GameContainer extends Component {
       ...this.state,
       sequence: newSequence
     }, () => {
-      this.showSequence();
+      this.showSequence(0);
     });
+  }
+
+  checkEntered() {
+    const {sequence, entered, score} = this.state
+    const idx = entered.length - 1;
+    const color = entered[entered.length -1];
+    const tile = document.querySelector(`.tile[data-color=${color}]`);
+    if (!(entered[idx] === sequence[idx])) {
+      this.gameOver();
+    } else {
+      this.toggleActiveTile(tile);
+      //Continue playing if the full sequence has been entered
+      if (sequence.length === entered.length) {
+        this.setState({
+          ...this.state,
+          score: score + 1
+        })
+        setTimeout(() => {
+          this.buildSequence();
+        }, 2000);
+      }
+    }
+  }
+
+  gameOver() {
+    const {sequence, entered, score, highScore} = this.state;
+    const color = sequence[entered.length -1];
+    const tile = document.querySelector(`.tile[data-color=${color}]`);
+    this.toggleActiveTile(tile);
+    if (score > highScore) {
+      this.setState({
+        ...this.state,
+        playing: false,
+        score: 0,
+        highScore: score
+      });
+    }
+    //return true;
   }
 
   handlePlay() {
@@ -38,52 +78,57 @@ export default class GameContainer extends Component {
       ...this.state,
       entered: [],
       playing: true,
-      socre: 0,
-      //sequence: []
+      score: 0,
+      sequence: []
     }, () => {
       this.buildSequence()
     });
   }
 
   handleTileClick(e) {
-  //  if (!this.state.playing  || !this.state.playerTurn) return;
+    if (!this.state.playing  || !this.state.playerTurn) return;
     const tile = e.target;
     const color = tile.dataset.color;
-    this.removeActive();
-    tile.classList.add('active');
+    let newEntered = [...this.state.entered];
+    newEntered.push(color);
+    this.setState({
+      ...this.state,
+      entered: newEntered
+    }, () => {
+      this.checkEntered();
+    });
   }
 
-  removeActive() {
+  showSequence(idx) {
+    const {sequence} = this.state;
+    const color = sequence[idx];
+    const tile = document.querySelector(`.tile[data-color=${color}]`);
+    this.toggleActiveTile(tile);
+
+    if (idx === sequence.length - 1) {
+      this.setState({
+        ...this.state,
+        entered: [],
+        playerTurn: true
+      });
+      return;
+    } else {
+      setTimeout(() => {
+        this.showSequence(idx + 1);
+      }, 1000);
+    }
+  }
+
+  toggleActiveTile(tile) {
     const tiles = document.querySelectorAll('.tile');
     tiles.forEach((tile) => tile.classList.remove('active'));
+    tile.classList.add('active');
+
+    setTimeout( () => {
+      tile.classList.remove('active');
+    }, 800);
+
   }
-
-
-  showSequence() {
-    let idx = 0;
-    const {sequence} = this.state;
-    setInterval( () => {
-      //If the sequence has been shown, let the player play
-      if (idx >= sequence.length) {
-        this.setState({
-          ...this.state,
-          playerTurn: true
-        });
-        return;
-      }
-
-      const color = sequence[idx];
-      const tile = document.querySelector(`.tile[data-color=${color}]`);
-      tile.classList.add('active');
-
-      setTimeout( () => {
-        tile.classList.remove('active');
-      }, 800);
-
-      idx++;
-    }, 1000);
-  }
-
 
   render() {
     return (
